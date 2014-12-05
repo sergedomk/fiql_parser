@@ -96,6 +96,10 @@ class Operator(object):
             raise FiqlException(
                 "'%s' is not a valid FIQL operator" % fiql_op_str)
 
+    def to_python(self):
+        """Return the Operator instance as a string."""
+        return self.value
+
     def __str__(self):
         """Return the Operator instance as a string."""
         return self.value
@@ -166,6 +170,10 @@ class Constraint(FiqlBase):
         self.comparison = comparison
         self.argument = argument
 
+    def to_python(self):
+        """Return the Constraint instance as a tuple."""
+        return (self.selector, self.comparison, self.argument)
+
     def __str__(self):
         """Return the Constraint instance as a string."""
         if self.argument:
@@ -191,7 +199,7 @@ class Expression(FiqlBase):
 
     def has_constraint(self):
         """Return whether or not this Expression has any Constraints (The
-        first element must be either an Expression or a constraint).
+        first element must be either an Expression or a Constraint).
         """
         return len(self.elements) and isinstance(self.elements[0], FiqlBase)
 
@@ -238,6 +246,16 @@ class Expression(FiqlBase):
         self.add_element(sub)
         return sub
 
+    def to_python(self):
+        """Return the Expression instance as list of tuples or tuple (If a
+        single constraint).
+        """
+        if len(self.elements) == 0:
+            return None
+        if len(self.elements) == 1:
+            return self.elements[0].to_python()
+        return [elem.to_python() for elem in self.elements]
+
     def __str__(self):
         """Return the Expression instance as a string."""
         elements_str = " ".join(["{0}".format(elem) for elem in self.elements])
@@ -248,7 +266,7 @@ class Expression(FiqlBase):
 
 def iter_parse(fiql_str):
     """Iterate through the FIQL string. Returns a tuple containing the
-    following FIQL components:
+    following FIQL components for each iteration:
 
     - preamble: Any operator or opening/closing paranthesis preceeding a
       constraint or at the very end of the FIQL string.

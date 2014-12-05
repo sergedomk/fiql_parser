@@ -17,6 +17,37 @@ class TestObjects(unittest.TestCase):
                 "'i' is not a valid FIQL operator",
                 Operator, 'i')
 
+    def test_operator_to_string(self):
+        sub_expression = Expression()
+        sub_expression.add_element(Constraint('foo'))
+        sub_expression.add_element(Operator(';'))
+        sub_expression.add_element(Constraint('bar', '>', '45'))
+        expression = Expression()
+        expression.add_element(Constraint('a', '==', 'wee'))
+        expression.add_element(Operator(','))
+        expression.add_element(sub_expression)
+        expression.add_element(Operator(';'))
+        expression.add_element(Constraint('key'))
+        self.assertEqual("a == wee OR ( foo AND bar > 45 ) AND key",
+                str(expression))
+
+    def test_operator_to_python(self):
+        sub_expression = Expression()
+        sub_expression.add_element(Constraint('foo'))
+        sub_expression.add_element(Operator(';'))
+        sub_expression.add_element(Constraint('bar', '>', '45'))
+        expression = Expression()
+        expression.add_element(Constraint('a', '==', 'wee'))
+        expression.add_element(Operator(','))
+        expression.add_element(sub_expression)
+        expression.add_element(Operator(';'))
+        expression.add_element(Constraint('key'))
+        self.assertEqual([
+            ('a', '==', 'wee'), 'OR', [
+                ('foo', None, None), 'AND', ('bar', '>', '45')
+                ], 'AND', ('key', None, None)],
+            expression.to_python())
+
     def test_constraint_init_with_defaults(self):
         constraint = Constraint('foo')
         self.assertEqual('foo', constraint.selector)
