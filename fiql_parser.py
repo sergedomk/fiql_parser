@@ -246,6 +246,44 @@ class Expression(FiqlBase):
         return elements_str
 
 
+def iter_parse(fiql_str):
+    """Iterate through the FIQL string. Returns a tuple containing the
+    following FIQL components:
+
+    - preamble: Any operator or opening/closing paranthesis preceeding a
+      constraint or at the very end of the FIQL string.
+    - selector: The selector portion of a FIQL constraint or `None` if yielding
+      the last portion of the string.
+    - comparison: The comparison portion of a FIQL constraint or `None` if
+      yielding the last portion of the string.
+    - argument: The argument portion of a FIQL constraint or `None` if yielding
+      the last portion of the string.
+
+    For usage see `parse_str_to_expression`.
+
+    Args:
+        fiql_str (string): The FIQL formatted string we want to parse.
+
+    Returns:
+        (tuple) Preamble, selector, comparison, argument.
+
+    Raises:
+        FiqlException: Unable to parse string due to incorrect formatting.
+    """
+    while len(fiql_str):
+        constraint_match = CONSTRAINT_COMP.split(fiql_str, 1)
+        if len(constraint_match) < 2:
+            yield (constraint_match[0], None, None, None)
+            break
+        yield (
+            constraint_match[0],
+            urllib.unquote_plus(constraint_match[1]),
+            constraint_match[4],
+            urllib.unquote_plus(constraint_match[6]) \
+                    if constraint_match[6] else None
+        )
+        fiql_str = constraint_match[8]
+
 def parse_str_to_expression(fiql_str):
     """Parse a FIQL formatted string into an Expression.
     Args:
@@ -259,23 +297,18 @@ def parse_str_to_expression(fiql_str):
     """
     expression = Expression()
     current = expression
-    while len(fiql_str):
-        constraint_match = CONSTRAINT_COMP.split(fiql_str, 1)
-        if constraint_match[0]:
-            for char in constraint_match[0]:
+    for (preamble, selector, comparison, argument) in iter_parse(fiql_str):
+        if preamble:
+            for char in preamble:
                 if char == '(':
                     current = current.create_nested_expression()
                 elif char == ')':
                     current = current.get_parent()
                 else:
                     current.add_element(Operator(char))
-        if len(constraint_match) < 2:
-            break
-        current.add_element(Constraint(
-            urllib.unquote_plus(constraint_match[1]),
-            COMPARISONS.get(constraint_match[4], constraint_match[4]),
-            urllib.unquote_plus(constraint_match[6] or '')))
-        fiql_str = constraint_match[8]
+        if selector:
+            current.add_element(Constraint(
+                selector, COMPARISONS.get(comparison, comparison), argument))
     if current != expression:
         raise FiqlException(
             "At least one nested expression was not correctly closed")
