@@ -61,6 +61,10 @@ class TestObjects(unittest.TestCase):
         self.assertEqual('==', constraint.comparison)
         self.assertEqual('bar', constraint.argument)
         self.assertEqual('foo==bar', str(constraint))
+        # invalid comparison
+        self.assertRaisesRegexp(FiqlException,
+                "'=gt' is not a valid FIQL comparison",
+                Constraint, 'foo', '=gt', 'bar')
 
     def test_constraint_set_parent(self):
         constraint = Constraint('foo')

@@ -52,6 +52,9 @@ CONSTRAINT_REGEX = '(' + SELECTOR_REGEX + ')((' + COMPARISON_REGEX + ')' + \
 #: FIQL constraint regex (compiled).
 CONSTRAINT_COMP = re.compile(CONSTRAINT_REGEX)
 
+#: FIQL comparison full string regex (compiled).
+COMPARISON_COMP = re.compile(r'^' + COMPARISON_REGEX + r'$')
+
 #: Mappings for common FIQL Comparisons.
 COMPARISON_MAP = {
     '==': '==',
@@ -166,6 +169,10 @@ class Constraint(FiqlBase):
         """
         super(Constraint, self).__init__()
         self.selector = selector
+        # Validate comparison format.
+        if comparison and COMPARISON_COMP.match(comparison) is None:
+            raise FiqlException(
+                "'%s' is not a valid FIQL comparison" % comparison)
         self.comparison = comparison
         self.argument = argument
 

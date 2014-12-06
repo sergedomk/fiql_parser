@@ -1,4 +1,4 @@
-fiql_parser
+FIQL Parser
 ===========
 
 A Python parser for the Feed Item Query Language (FIQL).
@@ -23,6 +23,14 @@ A Feed Item Query string looks something like this:
 The above query string is looking for all records with `last_name` starting
 with "foo" OR `age` less than 55 AND greater than 5. The paranthesis in
 the query work the same as they do in any logical expression.
+
+This code includes a modification to the rule defined for `comparison` to deal
+with an inconsistency. The change fixes an issue where the string "==" was NOT
+a valid `comparison` and thus made most of the examples in the FIQL draft
+incorrect.
+
+The `comparison` rule in this code is ( ( "=" \*ALPHA ) / fiql-delim ) "=". This
+rule allows for a string with no ALPHA characters.
 
 To Install
 ----------
