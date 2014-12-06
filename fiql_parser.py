@@ -53,7 +53,7 @@ CONSTRAINT_REGEX = '(' + SELECTOR_REGEX + ')((' + COMPARISON_REGEX + ')' + \
 CONSTRAINT_COMP = re.compile(CONSTRAINT_REGEX)
 
 #: Mappings for common FIQL Comparisons.
-COMPARISONS = {
+COMPARISON_MAP = {
     '==': '==',
     '!=': '!=',
     '=gt=': '>',
@@ -90,15 +90,14 @@ class Operator(object):
         Args:
             fiql_op_str (string): The FIQL operator (e.g., ';').
         """
-        try:
-            self.value = OPERATOR_MAP[fiql_op_str]
-        except KeyError:
+        if not fiql_op_str in OPERATOR_MAP:
             raise FiqlException(
                 "'%s' is not a valid FIQL operator" % fiql_op_str)
+        self.value = fiql_op_str
 
     def to_python(self):
         """Return the Operator instance as a string."""
-        return self.value
+        return OPERATOR_MAP[self.value]
 
     def __str__(self):
         """Return the Operator instance as a string."""
@@ -172,13 +171,18 @@ class Constraint(FiqlBase):
 
     def to_python(self):
         """Return the Constraint instance as a tuple."""
-        return (self.selector, self.comparison, self.argument)
+        return (
+            self.selector,
+            COMPARISON_MAP.get(self.comparison, self.comparison),
+            self.argument
+        )
 
     def __str__(self):
         """Return the Constraint instance as a string."""
         if self.argument:
-            return "{0} {1} {2}".format(self.selector, self.comparison,
-                                        self.argument)
+            return "{0}{1}{2}".format(urllib.quote_plus(self.selector),
+                                      self.comparison,
+                                      urllib.quote_plus(self.argument))
         return self.selector
 
 
@@ -258,9 +262,9 @@ class Expression(FiqlBase):
 
     def __str__(self):
         """Return the Expression instance as a string."""
-        elements_str = " ".join(["{0}".format(elem) for elem in self.elements])
+        elements_str = "".join(["{0}".format(elem) for elem in self.elements])
         if self.parent:
-            return "( " + elements_str + " )"
+            return "(" + elements_str + ")"
         return elements_str
 
 
@@ -326,7 +330,7 @@ def parse_str_to_expression(fiql_str):
                     current.add_element(Operator(char))
         if selector:
             current.add_element(Constraint(
-                selector, COMPARISONS.get(comparison, comparison), argument))
+                selector, comparison, argument))
     if current != expression:
         raise FiqlException(
             "At least one nested expression was not correctly closed")

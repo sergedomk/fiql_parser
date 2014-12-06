@@ -66,7 +66,6 @@ how to use it.
 TODO
 ----
 
-* __str__ should return FIQL formatted string.
 * Add more parser options.
 * Add methods to facilitate using code to generate FIQL strings more
   easily.

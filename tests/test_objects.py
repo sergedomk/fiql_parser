@@ -21,21 +21,21 @@ class TestObjects(unittest.TestCase):
         sub_expression = Expression()
         sub_expression.add_element(Constraint('foo'))
         sub_expression.add_element(Operator(';'))
-        sub_expression.add_element(Constraint('bar', '>', '45'))
+        sub_expression.add_element(Constraint('bar', '=gt=', '45'))
         expression = Expression()
         expression.add_element(Constraint('a', '==', 'wee'))
         expression.add_element(Operator(','))
         expression.add_element(sub_expression)
         expression.add_element(Operator(';'))
         expression.add_element(Constraint('key'))
-        self.assertEqual("a == wee OR ( foo AND bar > 45 ) AND key",
+        self.assertEqual("a==wee,(foo;bar=gt=45);key",
                 str(expression))
 
     def test_operator_to_python(self):
         sub_expression = Expression()
         sub_expression.add_element(Constraint('foo'))
         sub_expression.add_element(Operator(';'))
-        sub_expression.add_element(Constraint('bar', '>', '45'))
+        sub_expression.add_element(Constraint('bar', '=gt=', '45'))
         expression = Expression()
         expression.add_element(Constraint('a', '==', 'wee'))
         expression.add_element(Operator(','))
@@ -60,7 +60,7 @@ class TestObjects(unittest.TestCase):
         self.assertEqual('foo', constraint.selector)
         self.assertEqual('==', constraint.comparison)
         self.assertEqual('bar', constraint.argument)
-        self.assertEqual('foo == bar', str(constraint))
+        self.assertEqual('foo==bar', str(constraint))
 
     def test_constraint_set_parent(self):
         constraint = Constraint('foo')
@@ -109,7 +109,7 @@ class TestObjects(unittest.TestCase):
                 " <class 'fiql_parser.Operator'>",
                 expression.add_element, Operator(','))
         expression.add_element(Constraint('bar'))
-        self.assertEqual("foo AND bar", str(expression))
+        self.assertEqual("foo;bar", str(expression))
 
     def test_expression_create_nested_expression(self):
         expression = Expression()
