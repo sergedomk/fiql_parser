@@ -29,7 +29,7 @@ To Install
 
 **From source (tar.gz or checkout)**
 
-Unpack the archive, enter the sphinxcontrib-examplecode directory and run:
+Unpack the archive, enter the fiql_parser directory and run:
 
     python setup.py install
 
