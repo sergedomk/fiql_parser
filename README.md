@@ -36,5 +36,38 @@ Unpack the archive, enter the sphinxcontrib-examplecode directory and run:
 Using fiql_parser
 -----------------
 
+Currently the functionality is pretty limited so there isn't a lot to say on
+how to use it.
+
+**Parsing a FIQL formatted string**
+
+    from fiql_parser import parse_str_to_expression
+
+    fiql_str = "last_name==foo*,(age=lt=55;age=gt=5)"
+    expression = parse_str_to_expression(fiql_str)
+
+    expression.to_python()
+
+**Building an Expression**
+
+    from fiql_parser import (Expression, Constraint, Operator)
+
+    expression = Expression()
+    expression.add_element(Constraint('last_name', '==', 'foo*'))
+    expression.add_element(Operator(','))
+    sub_expression = Expression()
+    sub_expression.add_element(Constraint('age', '=lt=', '55'))
+    sub_expression.add_element(Operator(';'))
+    sub_expression.add_element(Constraint('age', '=gt=', '5'))
+    expression.add_element(sub_expression)
+
+    fiql_str = str(expression)
+
 TODO
+----
+
+* __str__ should return FIQL formatted string.
+* Add more parser options.
+* Add methods to facilitate using code to generate FIQL strings more
+  easily.
 
