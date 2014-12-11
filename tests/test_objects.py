@@ -141,3 +141,26 @@ class TestObjects(unittest.TestCase):
         sub_expression = expression.create_nested_expression()
         self.assertEqual(expression, sub_expression.get_parent())
 
+    def test_expression_fluent(self):
+        expression = Expression().constraint('foo', '==', 'bar') \
+                .op_or() \
+                .sub_expr(Expression() \
+                        .constraint('age', '=lt=', '55') \
+                        .op_and() \
+                        .constraint('age', '=gt=', '5')
+                    )
+        self.assertEqual("foo==bar,(age=lt=55;age=gt=5)",
+                str(expression))
+        self.assertRaisesRegexp(FiqlException,
+                "<class 'fiql_parser.Operator'> is not a valid Expression" + \
+                " type.",
+                Expression().sub_expr, Operator(';'))
+
+    def test_constraint_fluent(self):
+        expression = Constraint('foo', '==', 'bar').op_or() \
+                .sub_expr(Constraint('age', '=lt=', '55') \
+                        .op_and().constraint('age', '=gt=', '5')
+                    )
+        self.assertEqual("foo==bar,(age=lt=55;age=gt=5)",
+                str(expression))
+

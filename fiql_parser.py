@@ -176,6 +176,26 @@ class Constraint(FiqlBase):
         self.comparison = comparison
         self.argument = argument
 
+    def op_and(self):
+        """Add an 'AND' operator to a newly created Expression containing this
+        Constraint and return the Expression.
+
+        Returns:
+            (Expression): Newly created expression including this Constraint
+                and the 'AND' operator.
+        """
+        return Expression().add_element(self).op_and()
+
+    def op_or(self):
+        """Add an 'OR' operator to a newly created Expression containing this
+        Constraint and return the Expression.
+
+        Returns:
+            (Expression): Newly created expression including this Constraint
+                and the 'AND' operator.
+        """
+        return Expression().add_element(self).op_or()
+
     def to_python(self):
         """Return the Constraint instance as a tuple."""
         return (
@@ -225,6 +245,9 @@ class Expression(FiqlBase):
         Args:
             element: Constraint, Expression, or Operator.
 
+        Returns:
+            (Expression): self
+
         Raises:
             FiqlException: Operator not proceeded by Constraint.
         """
@@ -245,6 +268,7 @@ class Expression(FiqlBase):
                     self.elements[-1].__class__, element.__class__))
             element.set_parent(self)
         self.elements.append(element)
+        return self
 
     def create_nested_expression(self):
         """Create a nested Expression, add it as an element to this Expression,
@@ -256,6 +280,48 @@ class Expression(FiqlBase):
         sub = Expression()
         self.add_element(sub)
         return sub
+
+    def op_and(self):
+        """Fluently add an 'AND' operator to the expression.
+
+        Returns:
+            (Expression): self
+        """
+        return self.add_element(Operator(';'))
+
+    def op_or(self):
+        """Fluently add an 'OR' operator to the expression.
+
+        Returns:
+            (Expression): self
+        """
+        return self.add_element(Operator(','))
+
+    def constraint(self, selector, comparison=None, argument=None):
+        """Fluently add a Constraint to the expression.
+
+        Args:
+            selector (string): URL decoded constraint `selector`.
+            comparison (string): Optional parsed/mapped `comparison`
+                operator. Defaults to `None`.
+            argument (string): Optional URL decoded constraint `argument`.
+                Defaults to `None`.
+
+        Returns:
+            (Expression): self
+        """
+        return self.add_element(Constraint(selector, comparison, argument))
+
+    def sub_expr(self, expression):
+        """Fluently add a Sub-expression to the expression.
+
+        Returns:
+            (Expression): self
+        """
+        if not isinstance(expression, Expression):
+            raise FiqlException("%s is not a valid Expression type." % (
+                expression.__class__))
+        return self.add_element(expression)
 
     def to_python(self):
         """Return the Expression instance as list of tuples or tuple (If a
@@ -295,9 +361,6 @@ def iter_parse(fiql_str):
 
     Returns:
         (tuple) Preamble, selector, comparison, argument.
-
-    Raises:
-        FiqlException: Unable to parse string due to incorrect formatting.
     """
     while len(fiql_str):
         constraint_match = CONSTRAINT_COMP.split(fiql_str, 1)

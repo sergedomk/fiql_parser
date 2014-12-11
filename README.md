@@ -60,6 +60,7 @@ how to use it.
 
     from fiql_parser import (Expression, Constraint, Operator)
 
+    # Method One
     expression = Expression()
     expression.add_element(Constraint('last_name', '==', 'foo*'))
     expression.add_element(Operator(','))
@@ -69,12 +70,23 @@ how to use it.
     sub_expression.add_element(Constraint('age', '=gt=', '5'))
     expression.add_element(sub_expression)
 
+    # The following will be "last_name==foo*,(age=lt=55;age=gt=5)"
+    fiql_str = str(expression)
+
+    # Method Two
+    expression = Constraint('last_name', '==', 'foo*') \
+            .op_or() \
+            .sub_expr(
+                Constraint('age', '=lt=', '55') \
+                        .op_and() \
+                        .constraint('age', '=gt=', '5')
+            )
+
+    # The following will be "last_name==foo*,(age=lt=55;age=gt=5)"
     fiql_str = str(expression)
 
 TODO
 ----
 
 * Add more parser options.
-* Add methods to facilitate using code to generate FIQL strings more
-  easily.
 
