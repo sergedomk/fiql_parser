@@ -37,13 +37,17 @@ To Install
 
 **From PyPi**
 
-    pip install fiql-parser
+```bash
+$ pip install fiql-parser
+```
 
 **From source (tar.gz or checkout)**
 
 Unpack the archive, enter the fiql_parser directory and run:
 
-    python setup.py install
+```bash
+$ python setup.py install
+```
 
 Using fiql_parser
 -----------------
