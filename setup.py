@@ -22,6 +22,10 @@ To Install
 
     $ pip install fiql-parser
 
+Using fiql_parser
+-----------------
+
+For detailed documentation go to the GitHub site.
 """
 
 from setuptools import setup
@@ -32,7 +36,7 @@ with open('requirements-testing.txt') as fd:
 
 setup(
     name = 'fiql-parser',
-    version = '0.9',
+    version = '0.10',
     description = 'Python parser for the Feed Item Query Language (FIQL).',
     long_description = __doc__,
     author = 'Serge Domkowski',
