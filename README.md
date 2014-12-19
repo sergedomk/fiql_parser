@@ -35,6 +35,10 @@ rule allows for a string with no ALPHA characters.
 To Install
 ----------
 
+**From PyPi**
+
+    pip install fiql-parser
+
 **From source (tar.gz or checkout)**
 
 Unpack the archive, enter the fiql_parser directory and run:
@@ -49,41 +53,52 @@ how to use it.
 
 **Parsing a FIQL formatted string**
 
-    from fiql_parser import parse_str_to_expression
+```python
+from fiql_parser import parse_str_to_expression
 
-    fiql_str = "last_name==foo*,(age=lt=55;age=gt=5)"
-    expression = parse_str_to_expression(fiql_str)
+fiql_str = "last_name==foo*,(age=lt=55;age=gt=5)"
+expression = parse_str_to_expression(fiql_str)
 
-    expression.to_python()
+expression.to_python()
+```
 
 **Building an Expression**
 
-    from fiql_parser import (Expression, Constraint, Operator)
 
-    # Method One
-    expression = Expression()
-    expression.add_element(Constraint('last_name', '==', 'foo*'))
-    expression.add_element(Operator(','))
-    sub_expression = Expression()
-    sub_expression.add_element(Constraint('age', '=lt=', '55'))
-    sub_expression.add_element(Operator(';'))
-    sub_expression.add_element(Constraint('age', '=gt=', '5'))
-    expression.add_element(sub_expression)
+* Method One
 
-    # The following will be "last_name==foo*,(age=lt=55;age=gt=5)"
-    fiql_str = str(expression)
+```python
+from fiql_parser import (Expression, Constraint, Operator)
 
-    # Method Two
-    expression = Constraint('last_name', '==', 'foo*') \
-            .op_or() \
-            .sub_expr(
-                Constraint('age', '=lt=', '55') \
-                        .op_and() \
-                        .constraint('age', '=gt=', '5')
-            )
+expression = Expression()
+expression.add_element(Constraint('last_name', '==', 'foo*'))
+expression.add_element(Operator(','))
+sub_expression = Expression()
+sub_expression.add_element(Constraint('age', '=lt=', '55'))
+sub_expression.add_element(Operator(';'))
+sub_expression.add_element(Constraint('age', '=gt=', '5'))
+expression.add_element(sub_expression)
 
-    # The following will be "last_name==foo*,(age=lt=55;age=gt=5)"
-    fiql_str = str(expression)
+# The following will be "last_name==foo*,(age=lt=55;age=gt=5)"
+fiql_str = str(expression)
+```
+
+* Method Two
+
+```python
+from fiql_parser import Constraint
+
+expression = Constraint('last_name', '==', 'foo*') \
+        .op_or() \
+        .sub_expr(
+            Constraint('age', '=lt=', '55') \
+                    .op_and() \
+                    .constraint('age', '=gt=', '5')
+        )
+
+# The following will be "last_name==foo*,(age=lt=55;age=gt=5)"
+fiql_str = str(expression)
+```
 
 TODO
 ----

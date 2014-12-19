@@ -1,9 +1,30 @@
 #!/usr/bin/python
+"""
+FIQL Parser
+===========
+
+A Python parser for the Feed Item Query Language (FIQL).
+
+What is FIQL?
+-------------
+
+From the FIQL draft
+[ https://tools.ietf.org/html/draft-nottingham-atompub-fiql-00 ]:
+
+    The Feed Item Query Language (FIQL, pronounced "fickle") is a simple
+    but flexible, URI-friendly syntax for expressing filters across the
+    entries in a syndicated feed.
+
+To Install
+----------
+
+.. code:: bash
+
+    $ pip install fiql-parser
+
+"""
 
 from setuptools import setup
-
-with open('README.md') as fd:
-    readme = fd.read()
 
 with open('requirements-testing.txt') as fd:
     test_reqs = fd.readlines()
@@ -12,8 +33,8 @@ with open('requirements-testing.txt') as fd:
 setup(
     name = 'fiql-parser',
     version = '0.9',
-    description = 'FIQL Parser',
-    long_description = readme,
+    description = 'Python parser for the Feed Item Query Language (FIQL).',
+    long_description = __doc__,
     author = 'Serge Domkowski',
     author_email = 'sergedomk@gmail.com',
     url = 'https://github.com/sergedomk/fiql_parser',
