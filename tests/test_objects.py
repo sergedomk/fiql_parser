@@ -3,6 +3,7 @@
 Tests against the classes representing FIQL query objects.
 """
 from __future__ import unicode_literals
+from __future__ import absolute_import
 
 import unittest
 
@@ -81,7 +82,7 @@ class TestObjects(unittest.TestCase):
         constraint = Constraint('foo')
         self.assertRaisesRegexp(FiqlException,
                 "Parent must be of <class 'fiql_parser.Expression'>" + \
-                " not <type 'NoneType'>",
+                " not {0}".format(type(None)),
                 constraint.get_parent)
         expression = Expression()
         constraint.set_parent(expression)
@@ -96,7 +97,7 @@ class TestObjects(unittest.TestCase):
     def test_expression_add_element(self):
         expression = Expression()
         self.assertRaisesRegexp(FiqlException,
-                "<type 'unicode'> is not a valid element type",
+                "{0} is not a valid element type".format(type("")),
                 expression.add_element, 'foo')
         self.assertRaisesRegexp(FiqlException,
                 "<class 'fiql_parser.Operator'> proceeding initial" + \
@@ -136,7 +137,7 @@ class TestObjects(unittest.TestCase):
         expression = Expression()
         self.assertRaisesRegexp(FiqlException,
                 "Parent must be of <class 'fiql_parser.Expression'>" + \
-                " not <type 'NoneType'>",
+                " not {0}".format(type(None)),
                 expression.get_parent)
         sub_expression = expression.create_nested_expression()
         self.assertEqual(expression, sub_expression.get_parent())

@@ -17,9 +17,13 @@ The `comparison` rule in this code is ( ( "=" *ALPHA ) / fiql-delim ) "=". This
 rule allows for a string with no ALPHA characters.
 """
 from __future__ import unicode_literals
+from __future__ import absolute_import
 
 import re
-import urllib
+try:
+    from urllib import quote_plus, unquote_plus
+except ImportError:
+    from urllib.parse import quote_plus, unquote_plus
 
 
 #: Percent-encoding
@@ -207,9 +211,9 @@ class Constraint(FiqlBase):
     def __str__(self):
         """Return the Constraint instance as a string."""
         if self.argument:
-            return "{0}{1}{2}".format(urllib.quote_plus(self.selector),
+            return "{0}{1}{2}".format(quote_plus(self.selector),
                                       self.comparison,
-                                      urllib.quote_plus(self.argument))
+                                      quote_plus(self.argument))
         return self.selector
 
 
@@ -369,9 +373,9 @@ def iter_parse(fiql_str):
             break
         yield (
             constraint_match[0],
-            urllib.unquote_plus(constraint_match[1]),
+            unquote_plus(constraint_match[1]),
             constraint_match[4],
-            urllib.unquote_plus(constraint_match[6]) \
+            unquote_plus(constraint_match[6]) \
                     if constraint_match[6] else None
         )
         fiql_str = constraint_match[8]

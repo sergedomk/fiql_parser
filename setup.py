@@ -27,10 +27,10 @@ Using fiql_parser
 
 For detailed documentation go to the GitHub site.
 """
-
+import io
 from setuptools import setup
 
-with open('requirements-testing.txt') as fd:
+with io.open('requirements-testing.txt') as fd:
     test_reqs = fd.readlines()
     tests_require = [line for line in test_reqs if not line.startswith('#')]
 
@@ -55,6 +55,10 @@ setup(
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Software Development :: Libraries',
     ],
