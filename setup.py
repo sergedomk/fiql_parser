@@ -44,6 +44,7 @@ setup(
     url = 'https://github.com/sergedomk/fiql_parser',
     license = 'BSD',
     include_package_data = True,
+    py_modules=['fiql_parser'],
     install_requires = [],
     tests_require = tests_require,
     platforms = ['any'],
