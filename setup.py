@@ -26,6 +26,21 @@ Using fiql_parser
 -----------------
 
 For detailed documentation go to the GitHub site.
+
+Changes
+-------
+
+Version 0.11: Released TBD
+
+* Update documentation to reflect new structure.
+* BREAKS COMPATIBILITY WITH VERSIONS <= 0.10.
+  * Adopt prefix format over inline for internal structure, `to_python()`
+    output, and fluent expression build method.
+* Add missing `py_modules` required to actually end up with a working
+  package.
+
+See GitHub site for changes prior the most recent release.
+
 """
 import io
 from setuptools import setup

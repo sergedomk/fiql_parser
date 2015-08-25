@@ -33,7 +33,7 @@ class TestRegex(unittest.TestCase):
         re_comp = re.compile(UNRESERVED_REGEX + r'+$')
         self.assertIsNotNone(re_comp.match("POIUYTREWQASDFGHJKLMNBVCXZ"))
         self.assertIsNotNone(re_comp.match("qwertyuioplkjhgfdsazxcvbnm"))
-        self.assertIsNotNone(re_comp.match("1234567890_"))
+        self.assertIsNotNone(re_comp.match("1234567890._-~"))
         # Fail if we get even one reserved char
         self.assertIsNone(re_comp.match(':'))
         self.assertIsNone(re_comp.match('/'))
@@ -85,7 +85,7 @@ class TestRegex(unittest.TestCase):
 
     def test_argument(self):
         re_comp = re.compile(ARGUMENT_REGEX + '$')
-        self.assertIsNotNone(re_comp.match("ABC%3Edef_34%04!$'*+="))
+        self.assertIsNotNone(re_comp.match("ABC%3Edef_34~.-%04!$'*+:="))
         self.assertIsNone(re_comp.match('?'))
         self.assertIsNone(re_comp.match('&'))
         self.assertIsNone(re_comp.match(','))

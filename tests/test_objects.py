@@ -18,36 +18,14 @@ class TestObjects(unittest.TestCase):
                 "'i' is not a valid FIQL operator",
                 Operator, 'i')
 
-    def test_operator_to_string(self):
-        sub_expression = Expression()
-        sub_expression.add_element(Constraint('foo'))
-        sub_expression.add_element(Operator(';'))
-        sub_expression.add_element(Constraint('bar', '=gt=', '45'))
-        expression = Expression()
-        expression.add_element(Constraint('a', '==', 'wee'))
-        expression.add_element(Operator(','))
-        expression.add_element(sub_expression)
-        expression.add_element(Operator(';'))
-        expression.add_element(Constraint('key'))
-        self.assertEqual("a==wee,(foo;bar=gt=45);key",
-                str(expression))
-
-    def test_operator_to_python(self):
-        sub_expression = Expression()
-        sub_expression.add_element(Constraint('foo'))
-        sub_expression.add_element(Operator(';'))
-        sub_expression.add_element(Constraint('bar', '=gt=', '45'))
-        expression = Expression()
-        expression.add_element(Constraint('a', '==', 'wee'))
-        expression.add_element(Operator(','))
-        expression.add_element(sub_expression)
-        expression.add_element(Operator(';'))
-        expression.add_element(Constraint('key'))
-        self.assertEqual([
-            ('a', '==', 'wee'), 'OR', [
-                ('foo', None, None), 'AND', ('bar', '>', '45')
-                ], 'AND', ('key', None, None)],
-            expression.to_python())
+    def test_operator_precedence(self):
+        operator_and = Operator(';')
+        operator_or = Operator(',')
+        self.assertEqual(operator_and, Operator(';'))
+        self.assertEqual(operator_or, Operator(','))
+        self.assertNotEqual(operator_and, operator_or)
+        self.assertGreater(operator_and, operator_or)
+        self.assertLess(operator_or, operator_and)
 
     def test_constraint_init_with_defaults(self):
         constraint = Constraint('foo')
@@ -94,27 +72,33 @@ class TestObjects(unittest.TestCase):
         expression.add_element(Constraint('foo'))
         self.assertTrue(expression.has_constraint())
 
+    def test_expression_add_operator(self):
+        expression = Expression()
+        self.assertRaisesRegexp(FiqlException,
+                "<class 'fiql_parser.Constraint'> is not a valid element type",
+                expression.add_operator, Constraint('foo'))
+        expression.add_operator(Operator(';'))
+        self.assertEqual(Operator(';'), expression.operator)
+        new_expression = expression.add_operator(Operator(','))
+        self.assertEqual(Operator(';'), expression.operator)
+        self.assertNotEqual(expression, new_expression)
+        self.assertEqual(Operator(','), new_expression.operator)
+
     def test_expression_add_element(self):
         expression = Expression()
         self.assertRaisesRegexp(FiqlException,
                 "{0} is not a valid element type".format(type("")),
                 expression.add_element, 'foo')
-        self.assertRaisesRegexp(FiqlException,
-                "<class 'fiql_parser.Operator'> proceeding initial" + \
-                " <class 'fiql_parser.Constraint'>",
-                expression.add_element, Operator(';'))
         expression.add_element(Constraint('foo'))
-        self.assertRaisesRegexp(FiqlException,
-                "<class 'fiql_parser.Constraint'> can not be followed by" + \
-                " <class 'fiql_parser.Constraint'>",
-                expression.add_element, Constraint('bar'))
-        expression.add_element(Operator(';'))
-        self.assertRaisesRegexp(FiqlException,
-                "<class 'fiql_parser.Operator'> can not be followed by" + \
-                " <class 'fiql_parser.Operator'>",
-                expression.add_element, Operator(','))
         expression.add_element(Constraint('bar'))
+        expression.add_element(Operator(';'))
         self.assertEqual("foo;bar", str(expression))
+        new_expression = expression.add_operator(Operator(','))
+        self.assertEqual(Operator(';'), expression.operator)
+        self.assertNotEqual(expression, new_expression)
+        self.assertEqual(Operator(','), new_expression.operator)
+        new_expression.add_element(Constraint('baa'))
+        self.assertEqual("foo;bar,baa", str(new_expression))
 
     def test_expression_create_nested_expression(self):
         expression = Expression()
@@ -122,16 +106,9 @@ class TestObjects(unittest.TestCase):
         sub_sub_expression = sub_expression.create_nested_expression()
         self.assertEqual(expression, sub_expression.get_parent())
         self.assertEqual(sub_expression, sub_sub_expression.get_parent())
-        self.assertRaisesRegexp(FiqlException,
-                "<class 'fiql_parser.Expression'> can not be followed by" + \
-                " <class 'fiql_parser.Expression'>",
-                expression.create_nested_expression)
         expression = Expression()
         expression.add_element(Constraint('foo'))
-        self.assertRaisesRegexp(FiqlException,
-                "<class 'fiql_parser.Constraint'> can not be followed by" + \
-                " <class 'fiql_parser.Expression'>",
-                expression.create_nested_expression)
+        sub_expression = expression.create_nested_expression()
 
     def test_expression_get_parent(self):
         expression = Expression()
@@ -143,25 +120,73 @@ class TestObjects(unittest.TestCase):
         self.assertEqual(expression, sub_expression.get_parent())
 
     def test_expression_fluent(self):
-        expression = Expression().constraint('foo', '==', 'bar') \
-                .op_or() \
-                .sub_expr(Expression() \
-                        .constraint('age', '=lt=', '55') \
-                        .op_and() \
-                        .constraint('age', '=gt=', '5')
+        expression = Expression().op_or(
+                Constraint('foo', '==', 'bar'),
+                Expression().op_and(
+                        Constraint('age', '=lt=', '55'),
+                        Constraint('age', '=gt=', '5')
                     )
-        self.assertEqual("foo==bar,(age=lt=55;age=gt=5)",
+                )
+        self.assertEqual("foo==bar,age=lt=55;age=gt=5",
                 str(expression))
         self.assertRaisesRegexp(FiqlException,
-                "<class 'fiql_parser.Operator'> is not a valid Expression" + \
-                " type.",
-                Expression().sub_expr, Operator(';'))
+                "<type 'unicode'> is not a valid element type",
+                Expression().op_or, 'foo')
 
     def test_constraint_fluent(self):
-        expression = Constraint('foo', '==', 'bar').op_or() \
-                .sub_expr(Constraint('age', '=lt=', '55') \
-                        .op_and().constraint('age', '=gt=', '5')
+        expression = Constraint('foo', '==', 'bar').op_or(
+                Constraint('age', '=lt=', '55').op_and(
+                        Constraint('age', '=gt=', '5')
                     )
-        self.assertEqual("foo==bar,(age=lt=55;age=gt=5)",
+                )
+        self.assertEqual("foo==bar,age=lt=55;age=gt=5",
                 str(expression))
+
+    def test_to_string(self):
+        sub_expression = Expression()
+        sub_expression.add_element(Constraint('foo'))
+        sub_expression.add_element(Operator(';'))
+        sub_expression.add_element(Constraint('bar', '=gt=', '45'))
+        expression = Expression()
+        expression.add_element(Constraint('a', '==', 'wee'))
+        expression.add_element(Operator(','))
+        expression.add_element(sub_expression)
+        expression.add_element(Operator(';'))
+        expression.add_element(Constraint('key'))
+        self.assertEqual("a==wee,foo;bar=gt=45;key",
+                str(expression))
+
+    def test_to_python(self):
+        sub_expression = Expression()
+        sub_expression.add_element(Constraint('foo'))
+        sub_expression.add_element(Operator(';'))
+        sub_expression.add_element(Constraint('bar', '=gt=', '45'))
+        expression = Expression()
+        expression.add_element(Constraint('a', '==', 'wee'))
+        expression.add_element(Operator(','))
+        expression.add_element(sub_expression)
+        expression.add_element(Operator(';'))
+        expression.add_element(Constraint('key'))
+        self.assertEqual([
+                'OR',
+                ('a', '==', 'wee'),
+                ['AND',
+                    ['AND', ('foo', None, None), ('bar', '>', '45')],
+                    ('key', None, None)
+                ]
+            ], expression.to_python())
+
+    def test_expression_default_operator(self):
+        expression = Expression()
+        expression.add_element(Constraint('a', '==', 'wee'))
+        expression.add_element(Constraint('bar', '=gt=', '45'))
+        expression.add_element(Constraint('key'))
+        self.assertEqual("a==wee;bar=gt=45;key",
+                str(expression))
+        self.assertEqual([
+                'AND',
+                ('a', '==', 'wee'),
+                ('bar', '>', '45'),
+                ('key', None, None)
+            ], expression.to_python())
 
