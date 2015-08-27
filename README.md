@@ -127,7 +127,7 @@ Release TBD
 
 **Version 0.11**
 
-Released TBD
+Released on August 27th, 2015
 
 * Update documentation to reflect new structure.
 * BREAKS COMPATIBILITY WITH VERSIONS <= 0.10.

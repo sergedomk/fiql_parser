@@ -30,7 +30,7 @@ For detailed documentation go to the GitHub site.
 Changes
 -------
 
-Version 0.11: Released TBD
+Version 0.11: Released on August 27th, 2015
 
 * Update documentation to reflect new structure.
 * BREAKS COMPATIBILITY WITH VERSIONS <= 0.10.
@@ -51,7 +51,7 @@ with io.open('requirements-testing.txt') as fd:
 
 setup(
     name = 'fiql-parser',
-    version = '0.10',
+    version = '0.11',
     description = 'Python parser for the Feed Item Query Language (FIQL).',
     long_description = __doc__,
     author = 'Serge Domkowski',
