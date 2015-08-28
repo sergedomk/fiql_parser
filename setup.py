@@ -30,6 +30,11 @@ For detailed documentation go to the GitHub site.
 Changes
 -------
 
+Version 0.12: Released on August 27th, 2015
+
+* Added pylint to tox.
+* Added Python3.4 support.
+
 Version 0.11: Released on August 27th, 2015
 
 * Update documentation to reflect new structure.
@@ -51,7 +56,7 @@ with io.open('requirements-testing.txt') as fd:
 
 setup(
     name = 'fiql-parser',
-    version = '0.11',
+    version = '0.12',
     description = 'Python parser for the Feed Item Query Language (FIQL).',
     long_description = __doc__,
     author = 'Serge Domkowski',

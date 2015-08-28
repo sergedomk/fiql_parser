@@ -121,8 +121,9 @@ fiql_str = str(expression)
 
 **Version 0.12**
 
-Release on TBD
+Release on August 27th, 2015
 
+* Added pylint to tox.
 * Added Python3.4 support.
 
 **Version 0.11**
