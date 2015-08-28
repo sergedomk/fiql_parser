@@ -31,6 +31,7 @@ from __future__ import absolute_import
 
 import re
 try:
+    #pylint: disable=no-name-in-module
     from urllib import quote_plus, unquote_plus
 except ImportError:
     #pylint: disable=import-error,no-name-in-module
@@ -133,6 +134,14 @@ class Operator(object):
         if prec_self > prec_other:
             return 1
         return 0
+
+    def __eq__(self, other):
+        """Of equal precendence."""
+        return OPERATOR_MAP[self.value][1] == OPERATOR_MAP[other.value][1]
+
+    def __lt__(self, other):
+        """Of less than precedence."""
+        return OPERATOR_MAP[self.value][1] < OPERATOR_MAP[other.value][1]
 
 
 class FiqlBase(object):

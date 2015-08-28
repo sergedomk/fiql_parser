@@ -121,7 +121,7 @@ fiql_str = str(expression)
 
 **Version 0.12**
 
-Release TBD
+Release on TBD
 
 * Added Python3.4 support.
 

@@ -130,7 +130,7 @@ class TestObjects(unittest.TestCase):
         self.assertEqual("foo==bar,age=lt=55;age=gt=5",
                 str(expression))
         self.assertRaisesRegexp(FiqlException,
-                "<type 'unicode'> is not a valid element type",
+                "{0} is not a valid element type".format(type('')),
                 Expression().op_or, 'foo')
 
     def test_constraint_fluent(self):
