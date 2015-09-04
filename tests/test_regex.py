@@ -8,7 +8,8 @@ from __future__ import absolute_import
 import re
 import unittest
 
-from fiql_parser import (PCT_ENCODING_REGEX, UNRESERVED_REGEX,
+from fiql_parser.constants import (
+    PCT_ENCODING_REGEX, UNRESERVED_REGEX,
     FIQL_DELIM_REGEX, COMPARISON_REGEX, SELECTOR_REGEX,
     ARG_CHAR_REGEX, ARGUMENT_REGEX, CONSTRAINT_REGEX)
 
@@ -110,6 +111,4 @@ class TestRegex(unittest.TestCase):
                 re_comp.split("foo=", 1))
         self.assertEqual(['', 'foo', 'o', None, None, None, None, None, ''],
                 re_comp.split("foo", 1))
-
-
 

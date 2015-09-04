@@ -49,8 +49,9 @@ class TestObjects(unittest.TestCase):
         constraint = Constraint('foo')
         another_constraint = Constraint('bar')
         self.assertRaisesRegexp(FiqlException,
-                "Parent must be of <class 'fiql_parser.Expression'>" +
-                " not <class 'fiql_parser.Constraint'>",
+                "Parent must be of" +
+                " <class 'fiql_parser.expression.Expression'>" +
+                " not <class 'fiql_parser.constraint.Constraint'>",
                 constraint.set_parent, another_constraint)
         expression = Expression()
         constraint.set_parent(expression)
@@ -59,7 +60,8 @@ class TestObjects(unittest.TestCase):
     def test_constraint_get_parent(self):
         constraint = Constraint('foo')
         self.assertRaisesRegexp(FiqlException,
-                "Parent must be of <class 'fiql_parser.Expression'>" + \
+                "Parent must be of" +
+                " <class 'fiql_parser.expression.Expression'>" +
                 " not {0}".format(type(None)),
                 constraint.get_parent)
         expression = Expression()
@@ -75,7 +77,8 @@ class TestObjects(unittest.TestCase):
     def test_expression_add_operator(self):
         expression = Expression()
         self.assertRaisesRegexp(FiqlException,
-                "<class 'fiql_parser.Constraint'> is not a valid element type",
+                "<class 'fiql_parser.constraint.Constraint'>" +
+                " is not a valid element type",
                 expression.add_operator, Constraint('foo'))
         expression.add_operator(Operator(';'))
         self.assertEqual(Operator(';'), expression.operator)
@@ -113,7 +116,8 @@ class TestObjects(unittest.TestCase):
     def test_expression_get_parent(self):
         expression = Expression()
         self.assertRaisesRegexp(FiqlException,
-                "Parent must be of <class 'fiql_parser.Expression'>" + \
+                "Parent must be of" +
+                " <class 'fiql_parser.expression.Expression'>" +
                 " not {0}".format(type(None)),
                 expression.get_parent)
         sub_expression = expression.create_nested_expression()

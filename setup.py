@@ -30,6 +30,11 @@ For detailed documentation go to the GitHub site.
 Changes
 -------
 
+Version 0.13: Released TBD
+
+* Added Sphinx documentation.
+* Split code into multiple files.
+
 Version 0.12: Released on August 27th, 2015
 
 * Added pylint to tox.

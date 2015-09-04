@@ -8,7 +8,8 @@ from __future__ import absolute_import
 import unittest
 
 from fiql_parser import (parse_str_to_expression,
-        iter_parse, FiqlException)
+        FiqlException)
+from fiql_parser.parser import iter_parse
 
 
 class TestParse(unittest.TestCase):
