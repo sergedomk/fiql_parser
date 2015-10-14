@@ -30,6 +30,7 @@ from __future__ import unicode_literals
 from __future__ import absolute_import
 
 from .exceptions import FiqlException
+from .exceptions import FiqlObjectException, FiqlFormatException
 from .operator import Operator
 from .constraint import Constraint
 from .expression import Expression

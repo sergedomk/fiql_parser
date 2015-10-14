@@ -13,7 +13,7 @@ except ImportError:
     from urllib.parse import unquote_plus
 
 from .constants import CONSTRAINT_COMP
-from .exceptions import FiqlException
+from .exceptions import FiqlFormatException
 from .expression import BaseExpression, Expression
 from .constraint import Constraint
 from .operator import Operator
@@ -63,7 +63,7 @@ def parse_str_to_expression(fiql_str):
         Expression: An Expression object representing the parsed FIQL string.
 
     Raises:
-        FiqlException: Unable to parse string due to incorrect formatting.
+        FiqlFormatException: Unable to parse string due to incorrect formatting.
 
     Example:
 
@@ -79,8 +79,9 @@ def parse_str_to_expression(fiql_str):
             for char in preamble:
                 if char == '(':
                     if isinstance(last_element, BaseExpression):
-                        raise FiqlException("%s can not be followed by %s" % (
-                            last_element.__class__, Expression))
+                        raise FiqlFormatException(
+                            "%s can not be followed by %s" % (
+                                last_element.__class__, Expression))
                     expression = expression.create_nested_expression()
                     nesting_lvl += 1
                 elif char == ')':
@@ -89,24 +90,26 @@ def parse_str_to_expression(fiql_str):
                     nesting_lvl -= 1
                 else:
                     if not expression.has_constraint():
-                        raise FiqlException("%s proceeding initial %s" % (
-                            Operator, Constraint))
+                        raise FiqlFormatException(
+                            "%s proceeding initial %s" % (
+                                Operator, Constraint))
                     if isinstance(last_element, Operator):
-                        raise FiqlException("%s can not be followed by %s" % (
-                            Operator, Operator))
+                        raise FiqlFormatException(
+                            "%s can not be followed by %s" % (
+                                Operator, Operator))
                     last_element = Operator(char)
                     expression = expression.add_operator(last_element)
         if selector:
             if isinstance(last_element, BaseExpression):
-                raise FiqlException("%s can not be followed by %s" % (
+                raise FiqlFormatException("%s can not be followed by %s" % (
                     last_element.__class__, Constraint))
             last_element = Constraint(selector, comparison, argument)
             expression.add_element(last_element)
     if nesting_lvl != 0:
-        raise FiqlException(
+        raise FiqlFormatException(
             "At least one nested expression was not correctly closed")
     if not expression.has_constraint():
-        raise FiqlException("Parsed string '%s' contained no constraint" % \
-                fiql_str)
+        raise FiqlFormatException(
+            "Parsed string '%s' contained no constraint" % fiql_str)
     return expression
 

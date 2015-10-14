@@ -7,6 +7,14 @@ from __future__ import absolute_import
 
 
 class FiqlException(Exception):
-    """Exception class for FIQL parsing/retrieval errors."""
+    """Base Exception class for FIQL errors."""
+    pass
+
+class FiqlObjectException(FiqlException):
+    """Exception class for FIQL expression object errors."""
+    pass
+
+class FiqlFormatException(FiqlException):
+    """Exception class for FIQL string parsing errors."""
     pass
 

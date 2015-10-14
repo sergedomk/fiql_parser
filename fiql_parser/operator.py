@@ -9,7 +9,7 @@ Attributes:
 from __future__ import unicode_literals
 from __future__ import absolute_import
 
-from .exceptions import FiqlException
+from .exceptions import FiqlObjectException
 
 
 OPERATOR_MAP = {
@@ -36,9 +36,12 @@ class Operator(object):
 
         Args:
             fiql_op_str (string): The FIQL operator (e.g., ';').
+
+        Raises:
+            FiqlObjectException: Invalid FIQL operator.
         """
         if not fiql_op_str in OPERATOR_MAP:
-            raise FiqlException(
+            raise FiqlObjectException(
                 "'%s' is not a valid FIQL operator" % fiql_op_str)
         self.value = fiql_op_str
 

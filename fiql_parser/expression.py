@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 from __future__ import absolute_import
 
 
-from .exceptions import FiqlException
+from .exceptions import FiqlObjectException
 from .operator import Operator
 
 
@@ -38,10 +38,10 @@ class BaseExpression(object):
             parent (Expression): The Expression which contains this object.
 
         Raises:
-            FiqlException: Parent must be of type Expression.
+            FiqlObjectException: Parent must be of type Expression.
         """
         if not isinstance(parent, Expression):
-            raise FiqlException("Parent must be of %s not %s" % (
+            raise FiqlObjectException("Parent must be of %s not %s" % (
                 Expression, type(parent)))
         self.parent = parent
 
@@ -52,10 +52,10 @@ class BaseExpression(object):
             Expression: The Expression which contains this object.
 
         Raises:
-            FiqlException: Parent is None.
+            FiqlObjectException: Parent is None.
         """
         if not isinstance(self.parent, Expression):
-            raise FiqlException("Parent must be of %s not %s" % (
+            raise FiqlObjectException("Parent must be of %s not %s" % (
                 Expression, type(self.parent)))
         return self.parent
 
@@ -116,10 +116,10 @@ class Expression(BaseExpression):
             Expression: self or related expression.
 
         Raises:
-            FiqlExpression: operator is not a valid Operator.
+            FiqlObjectExpression: operator is not a valid Operator.
         """
         if not isinstance(operator, Operator):
-            raise FiqlException("%s is not a valid element type" % (
+            raise FiqlObjectException("%s is not a valid element type" % (
                 operator.__class__))
 
         if not self._working_fragment.operator:
@@ -153,7 +153,7 @@ class Expression(BaseExpression):
             Expression: self
 
         Raises:
-            FiqlException: element is not a valid type.
+            FiqlObjectException: Element is not a valid type.
         """
         if isinstance(element, BaseExpression):
             element.set_parent(self._working_fragment)

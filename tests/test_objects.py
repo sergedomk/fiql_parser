@@ -8,13 +8,13 @@ from __future__ import absolute_import
 import unittest
 
 from fiql_parser import (Operator, Constraint, Expression,
-        FiqlException)
+        FiqlObjectException)
 
 
 class TestObjects(unittest.TestCase):
 
     def test_operator_init(self):
-        self.assertRaisesRegexp(FiqlException,
+        self.assertRaisesRegexp(FiqlObjectException,
                 "'i' is not a valid FIQL operator",
                 Operator, 'i')
 
@@ -41,14 +41,14 @@ class TestObjects(unittest.TestCase):
         self.assertEqual('bar', constraint.argument)
         self.assertEqual('foo==bar', str(constraint))
         # invalid comparison
-        self.assertRaisesRegexp(FiqlException,
+        self.assertRaisesRegexp(FiqlObjectException,
                 "'=gt' is not a valid FIQL comparison",
                 Constraint, 'foo', '=gt', 'bar')
 
     def test_constraint_set_parent(self):
         constraint = Constraint('foo')
         another_constraint = Constraint('bar')
-        self.assertRaisesRegexp(FiqlException,
+        self.assertRaisesRegexp(FiqlObjectException,
                 "Parent must be of" +
                 " <class 'fiql_parser.expression.Expression'>" +
                 " not <class 'fiql_parser.constraint.Constraint'>",
@@ -59,7 +59,7 @@ class TestObjects(unittest.TestCase):
 
     def test_constraint_get_parent(self):
         constraint = Constraint('foo')
-        self.assertRaisesRegexp(FiqlException,
+        self.assertRaisesRegexp(FiqlObjectException,
                 "Parent must be of" +
                 " <class 'fiql_parser.expression.Expression'>" +
                 " not {0}".format(type(None)),
@@ -76,7 +76,7 @@ class TestObjects(unittest.TestCase):
 
     def test_expression_add_operator(self):
         expression = Expression()
-        self.assertRaisesRegexp(FiqlException,
+        self.assertRaisesRegexp(FiqlObjectException,
                 "<class 'fiql_parser.constraint.Constraint'>" +
                 " is not a valid element type",
                 expression.add_operator, Constraint('foo'))
@@ -89,7 +89,7 @@ class TestObjects(unittest.TestCase):
 
     def test_expression_add_element(self):
         expression = Expression()
-        self.assertRaisesRegexp(FiqlException,
+        self.assertRaisesRegexp(FiqlObjectException,
                 "{0} is not a valid element type".format(type("")),
                 expression.add_element, 'foo')
         expression.add_element(Constraint('foo'))
@@ -115,7 +115,7 @@ class TestObjects(unittest.TestCase):
 
     def test_expression_get_parent(self):
         expression = Expression()
-        self.assertRaisesRegexp(FiqlException,
+        self.assertRaisesRegexp(FiqlObjectException,
                 "Parent must be of" +
                 " <class 'fiql_parser.expression.Expression'>" +
                 " not {0}".format(type(None)),
@@ -133,7 +133,7 @@ class TestObjects(unittest.TestCase):
                 )
         self.assertEqual("foo==bar,age=lt=55;age=gt=5",
                 str(expression))
-        self.assertRaisesRegexp(FiqlException,
+        self.assertRaisesRegexp(FiqlObjectException,
                 "{0} is not a valid element type".format(type('')),
                 Expression().op_or, 'foo')
 

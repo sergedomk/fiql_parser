@@ -15,7 +15,7 @@ except ImportError:
     #pylint: disable=import-error,no-name-in-module
     from urllib.parse import quote_plus
 
-from .exceptions import FiqlException
+from .exceptions import FiqlObjectException
 from .constants import COMPARISON_COMP
 from .expression import BaseExpression, Expression
 
@@ -54,12 +54,15 @@ class Constraint(BaseExpression):
                 operator. Defaults to `None`.
             argument (string, optional): URL decoded constraint `argument`.
                 Defaults to `None`.
+
+        Raises:
+            FiqlObjectException: Not a valid FIQL comparison.
         """
         super(Constraint, self).__init__()
         self.selector = selector
         # Validate comparison format.
         if comparison and COMPARISON_COMP.match(comparison) is None:
-            raise FiqlException(
+            raise FiqlObjectException(
                 "'%s' is not a valid FIQL comparison" % comparison)
         self.comparison = comparison
         self.argument = argument
