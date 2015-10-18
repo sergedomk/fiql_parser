@@ -32,8 +32,10 @@ Released on August 27th, 2015
 
 * Update documentation to reflect new structure.
 * BREAKS COMPATIBILITY WITH VERSIONS <= 0.10.
+
   * Adopt prefix format over inline for internal structure, ``to_python()``
     output, and fluent expression build method.
+
 * Add missing ``py_modules`` required to actually end up with a working
   package.
 
