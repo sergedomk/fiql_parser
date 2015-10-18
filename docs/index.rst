@@ -1,6 +1,8 @@
 FIQL Parser
 ===========
 
+:release: |release|
+
 A Python parser for the Feed Item Query Language (FIQL).
 
 .. toctree::
