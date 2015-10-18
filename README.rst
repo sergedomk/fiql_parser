@@ -13,7 +13,7 @@ CHANGES
 
 **Version 0.13**
 
-Release TBD
+Release on October 17th, 2015
 
 * Added Sphinx documentation.
 * Split code into multiple files.
