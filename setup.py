@@ -1,36 +1,6 @@
 #!/usr/bin/python
 """
 FIQL Parser
-===========
-
-A Python parser for the Feed Item Query Language (FIQL).
-
-
-Changes
--------
-
-Version 0.13: Released TBD
-
-* Added Sphinx documentation.
-* Split code into multiple files.
-* Add exception classes to better distinguish between errors.
-
-Version 0.12: Released on August 27th, 2015
-
-* Added pylint to tox.
-* Added Python3.4 support.
-
-Version 0.11: Released on August 27th, 2015
-
-* Update documentation to reflect new structure.
-* BREAKS COMPATIBILITY WITH VERSIONS <= 0.10.
-  * Adopt prefix format over inline for internal structure, `to_python()`
-    output, and fluent expression build method.
-* Add missing `py_modules` required to actually end up with a working
-  package.
-
-See GitHub site for changes prior the most recent release.
-
 """
 import io
 from setuptools import setup
@@ -39,11 +9,14 @@ with io.open('requirements-testing.txt') as fd:
     test_reqs = fd.readlines()
     tests_require = [line for line in test_reqs if not line.startswith('#')]
 
+with io.open('README.rst') as fd:
+    long_desc = fd.read()
+
 setup(
     name = 'fiql-parser',
-    version = '0.12',
+    version = '0.13',
     description = 'Python parser for the Feed Item Query Language (FIQL).',
-    long_description = __doc__,
+    long_description = long_desc,
     author = 'Serge Domkowski',
     author_email = 'sergedomk@gmail.com',
     url = 'https://github.com/sergedomk/fiql_parser',

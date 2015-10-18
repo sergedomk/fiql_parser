@@ -14,7 +14,7 @@ try:
 except ImportError:
     # Fall back to hardcoded version if we can't get it from the package.
     # i.e., This is being generarted on readthedocs.org.
-    __version__ = "0.12"
+    __version__ = "0.13"
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
