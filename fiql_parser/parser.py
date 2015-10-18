@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-FIQL Parser.
+The ``parser`` module includes the code used to convert a string representing
+a FIQL ``Expression`` into an object representing the same FIQL
+``Expression``.
+
+The ``Expression`` object returned is ideally suited for use in filtering
+database queries with many ORMs.
 """
 from __future__ import unicode_literals
 from __future__ import absolute_import
@@ -20,19 +25,19 @@ from .operator import Operator
 
 
 def iter_parse(fiql_str):
-    """Iterate through the FIQL string. Yields a tuple containing the
+    """Iterate through the FIQL string. Yield a tuple containing the
     following FIQL components for each iteration:
 
-    - preamble: Any operator or opening/closing paranthesis preceeding a
-      constraint or at the very end of the FIQL string.
-    - selector: The selector portion of a FIQL constraint or `None` if yielding
-      the last portion of the string.
-    - comparison: The comparison portion of a FIQL constraint or `None` if
-      yielding the last portion of the string.
-    - argument: The argument portion of a FIQL constraint or `None` if yielding
-      the last portion of the string.
+      - preamble: Any operator or opening/closing paranthesis preceeding a
+        constraint or at the very end of the FIQL string.
+      - selector: The selector portion of a FIQL constraint or ``None`` if
+        yielding the last portion of the string.
+      - comparison: The comparison portion of a FIQL constraint or ``None``
+        if yielding the last portion of the string.
+      - argument: The argument portion of a FIQL constraint or ``None`` if
+        yielding the last portion of the string.
 
-    For usage see `parse_str_to_expression`.
+    For usage see :func:`parse_str_to_expression`.
 
     Args:
         fiql_str (string): The FIQL formatted string we want to parse.
@@ -55,19 +60,23 @@ def iter_parse(fiql_str):
         fiql_str = constraint_match[8]
 
 def parse_str_to_expression(fiql_str):
-    """Parse a FIQL formatted string into an Expression.
+    """Parse a FIQL formatted string into an ``Expression``.
+
     Args:
         fiql_str (string): The FIQL formatted string we want to parse.
 
     Returns:
-        Expression: An Expression object representing the parsed FIQL string.
+        Expression: An ``Expression`` object representing the parsed FIQL
+        string.
 
     Raises:
-        FiqlFormatException: Unable to parse string due to incorrect formatting.
+        FiqlFormatException: Unable to parse string due to incorrect
+            formatting.
 
     Example:
 
-        >>> expression = parse_str_to_expression("name==bar,dob=gt=1990-01-01")
+        >>> expression = parse_str_to_expression(
+        ...         "name==bar,dob=gt=1990-01-01")
 
     """
     #pylint: disable=too-many-branches

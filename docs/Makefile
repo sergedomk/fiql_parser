@@ -22,13 +22,8 @@ help:
 
 clean:
 	-rm -rf $(BUILDDIR)/*
-	-rm fiql_parser*.rst
-	-rm modules.rst
 
-fiql_parser:
-	sphinx-apidoc -o $(SOURCEDIR) ../fiql_parser
-
-html: fiql_parser
+html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."

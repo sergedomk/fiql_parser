@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-FIQL Constraint.
+The FIQL ``Constraint`` is the building block of the FIQL ``Expression``. A
+FIQL ``Constraint`` is, on it's own, a very simple ``Expression``.
+
+The ``constraint`` module includes the code used for managing comparision
+acceptance and representation of the FIQL ``Constraint``.
 
 Attributes:
     COMPARISON_MAP (dict): Mappings for common FIQL comparisons.
@@ -20,6 +24,7 @@ from .constants import COMPARISON_COMP
 from .expression import BaseExpression, Expression
 
 
+# Common FIQL comparisons.
 COMPARISON_MAP = {
     '==': '==',
     '!=': '!=',
@@ -33,27 +38,25 @@ COMPARISON_MAP = {
 class Constraint(BaseExpression):
 
     """
-    FIQL Constraint.
-
-    The Constraint is the smallest logical unit for a FIQL Expression. It
-    itself must evaluate to `True` or `False` and contains no smaller unit
-    which itself can evaulate to `True` or `False`.
+    The ``Constraint`` is the smallest logical unit for a FIQL ``Expression``.
+    It itself must evaluate to ``True`` or ``False`` and contains no smaller
+    unit which itself can evaulate to ``True`` or ``False``.
 
     Attributes:
-        selector (string): Constraint `selector`.
-        comparison (string): Constraint `comparison` operator.
-        argument (string): Constraint `argument`.
+        selector (string): Constraint ``selector``.
+        comparison (string): Constraint ``comparison`` operator.
+        argument (string): Constraint ``argument``.
     """
 
     def __init__(self, selector, comparison=None, argument=None):
-        """Initialize instance of Constraint.
+        """Initialize instance of ``Constraint``.
 
         Args:
-            selector (string): URL decoded constraint `selector`.
-            comparison (string, optional): Parsed/mapped `comparison`
-                operator. Defaults to `None`.
-            argument (string, optional): URL decoded constraint `argument`.
-                Defaults to `None`.
+            selector (string): URL decoded constraint ``selector``.
+            comparison (string, optional): Parsed/mapped ``comparison``
+                operator. Defaults to ``None``.
+            argument (string, optional): URL decoded constraint ``argument``.
+                Defaults to ``None``.
 
         Raises:
             FiqlObjectException: Not a valid FIQL comparison.
@@ -68,35 +71,43 @@ class Constraint(BaseExpression):
         self.argument = argument
 
     def op_and(self, *elements):
-        """Add an 'AND' operator to a newly created Expression containing this
-        Constraint and return the Expression.
+        """Create an ``Expression`` using this ``Constraint`` and the specified
+        additional ``elements`` joined using an "AND" ``Operator``
 
         Args:
-            *elements (Expressions and/or Constraints): The elements which this
-                operator applies to.
+            *elements (BaseExpression): The ``Expression`` and/or
+                ``Constraint`` elements which the "AND" ``Operator`` applies
+                to in addition to this ``Constraint``.
 
         Returns:
-            Expression: Newly created expression including this Constraint
-                and the 'AND' operator.
+            Expression: Newly created ``Expression`` including this
+                ``Constraint``, the elements passed in, and the "AND"
+                ``Operator``.
         """
         return Expression().op_and(self, *elements)
 
     def op_or(self, *elements):
-        """Add an 'OR' operator to a newly created Expression containing this
-        Constraint and return the Expression.
+        """Create an ``Expression`` using this ``Constraint`` and the specified
+        additional ``elements`` joined using an "OR" ``Operator``
 
         Args:
-            *elements (Expressions and/or Constraints): The elements which this
-                operator applies to.
+            *elements (BaseExpression): The ``Expression`` and/or
+                ``Constraint`` elements which the "OR" ``Operator`` applies
+                to in addition to this ``Constraint``.
 
         Returns:
-            Expression: Newly created expression including this Constraint
-                and the 'AND' operator.
+            Expression: Newly created ``Expression`` including this
+                ``Constraint``, the elements passed in, and the "OR"
+                ``Operator``.
         """
         return Expression().op_or(self, *elements)
 
     def to_python(self):
-        """Return the Constraint instance as a tuple."""
+        """Deconstruct the ``Constraint`` instance to a tuple.
+
+        Returns:
+            tuple: The deconstructed ``Constraint``.
+        """
         return (
             self.selector,
             COMPARISON_MAP.get(self.comparison, self.comparison),
@@ -104,7 +115,11 @@ class Constraint(BaseExpression):
         )
 
     def __str__(self):
-        """Return the Constraint instance as a string."""
+        """Represent the ``Constraint`` instance as a string.
+
+        Returns:
+            string: The represented ``Constraint``.
+        """
         if self.argument:
             return "{0}{1}{2}".format(quote_plus(self.selector),
                                       self.comparison,
