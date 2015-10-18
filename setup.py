@@ -5,27 +5,6 @@ FIQL Parser
 
 A Python parser for the Feed Item Query Language (FIQL).
 
-What is FIQL?
--------------
-
-From the FIQL draft
-[ https://tools.ietf.org/html/draft-nottingham-atompub-fiql-00 ]:
-
-    The Feed Item Query Language (FIQL, pronounced "fickle") is a simple
-    but flexible, URI-friendly syntax for expressing filters across the
-    entries in a syndicated feed.
-
-To Install
-----------
-
-.. code:: bash
-
-    $ pip install fiql-parser
-
-Using fiql_parser
------------------
-
-For detailed documentation go to the GitHub site.
 
 Changes
 -------
@@ -34,6 +13,7 @@ Version 0.13: Released TBD
 
 * Added Sphinx documentation.
 * Split code into multiple files.
+* Add exception classes to better distinguish between errors.
 
 Version 0.12: Released on August 27th, 2015
 
