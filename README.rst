@@ -11,6 +11,20 @@ Complete documentation can be found at http://fiql-parser.readthedocs.org/
 CHANGES
 -------
 
+**Version 0.15**
+
+Release TBD
+
+* Added Version 0.14 changes and release date to README.
+* Removed unnecessary versioning logic in docs/conf.py.
+
+**Version 0.14**
+
+Release on November 15th, 2015
+
+* Added missing date for 0.13 release in README.
+* Fixed packaging bug in version 0.13.
+
 **Version 0.13**
 
 Release on October 17th, 2015
