@@ -14,7 +14,7 @@ with io.open('README.rst') as fd:
 
 setup(
     name = 'fiql-parser',
-    version = '0.13',
+    version = '0.14',
     description = 'Python parser for the Feed Item Query Language (FIQL).',
     long_description = long_desc,
     author = 'Serge Domkowski',
@@ -22,7 +22,7 @@ setup(
     url = 'https://github.com/sergedomk/fiql_parser',
     license = 'BSD',
     include_package_data = True,
-    py_modules=['fiql_parser'],
+    packages=['fiql_parser'],
     install_requires = [],
     tests_require = tests_require,
     platforms = ['any'],

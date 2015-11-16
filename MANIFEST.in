@@ -1,4 +1,4 @@
-include README.md LICENCE CONTRIBUTORS
+include README.rst LICENSE CONTRIBUTORS
 include requirements-testing.txt requirements-docs.txt
 recursive-include tests *.py
 recursive-include docs *.py *.rst Makefile
