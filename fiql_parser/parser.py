@@ -28,7 +28,7 @@ def iter_parse(fiql_str):
     """Iterate through the FIQL string. Yield a tuple containing the
     following FIQL components for each iteration:
 
-      - preamble: Any operator or opening/closing paranthesis preceeding a
+      - preamble: Any operator or opening/closing paranthesis preceding a
         constraint or at the very end of the FIQL string.
       - selector: The selector portion of a FIQL constraint or ``None`` if
         yielding the last portion of the string.
