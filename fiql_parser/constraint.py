@@ -3,7 +3,7 @@
 The FIQL ``Constraint`` is the building block of the FIQL ``Expression``. A
 FIQL ``Constraint`` is, on it's own, a very simple ``Expression``.
 
-The ``constraint`` module includes the code used for managing comparision
+The ``constraint`` module includes the code used for managing comparison
 acceptance and representation of the FIQL ``Constraint``.
 
 Attributes:
