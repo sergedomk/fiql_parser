@@ -21,9 +21,10 @@
 from __future__ import unicode_literals
 from __future__ import absolute_import
 
-import pkg_resources
+VERSION = (0, 15)
 #pylint: disable=no-member
-__version__ = pkg_resources.get_distribution("fiql_parser").version
+__version__ = VERSION
+__versionstr__ = '.'.join(map(str, VERSION))
 
 from .exceptions import FiqlException
 from .exceptions import FiqlObjectException, FiqlFormatException
