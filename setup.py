@@ -3,8 +3,6 @@
 """
 FIQL Parser
 """
-from __future__ import unicode_literals
-from __future__ import absolute_import
 
 import io
 import re
@@ -18,7 +16,7 @@ with io.open('README.rst') as fd:
     long_desc = fd.read()
 
 # Caculate the version number.
-with io.open('fiql_parser/__init__.py') as fd:
+with io.open('fiql_parser/__init__.py', encoding='utf-8') as fd:
     for line in fd:
         version_match = re.match("__version__ = ['\"]([^'\"]*)['\"]", line)
         if version_match:
