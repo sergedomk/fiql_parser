@@ -3,6 +3,7 @@
 FIQL Parser
 """
 import io
+import re
 from setuptools import setup
 
 with io.open('requirements-testing.txt') as fd:
@@ -12,9 +13,19 @@ with io.open('requirements-testing.txt') as fd:
 with io.open('README.rst') as fd:
     long_desc = fd.read()
 
+# Caculate the version number.
+with io.open('fiql_parser/__init__.py') as fd:
+    for line in fd:
+        version_match = re.match("__version__ = ['\"]([^'\"]*)['\"]", line)
+        if version_match:
+            version = version_match.group(1)
+            break
+    else:
+        raise RuntimeError("Unable to find version string.")
+
 setup(
     name = 'fiql-parser',
-    version = '0.14',
+    version = version,
     description = 'Python parser for the Feed Item Query Language (FIQL).',
     long_description = long_desc,
     author = 'Serge Domkowski',
