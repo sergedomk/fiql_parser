@@ -1,7 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 """
 FIQL Parser
 """
+from __future__ import unicode_literals
+from __future__ import absolute_import
+
 import io
 import re
 from setuptools import setup
