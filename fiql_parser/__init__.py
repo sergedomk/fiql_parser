@@ -21,7 +21,7 @@
 from __future__ import unicode_literals
 from __future__ import absolute_import
 
-__version__ = "0.14"
+__version__ = "0.15"
 
 from .exceptions import FiqlException
 from .exceptions import FiqlObjectException, FiqlFormatException

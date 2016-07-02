@@ -13,8 +13,9 @@ CHANGES
 
 **Version 0.15**
 
-Release TBD
+Release on July 2nd, 2016
 
+* Got rid of pkg_resources for fiql_parser version.
 * Added Version 0.14 changes and release date to README.
 * Removed unnecessary versioning logic in docs/conf.py.
 
