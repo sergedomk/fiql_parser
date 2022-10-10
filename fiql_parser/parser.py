@@ -11,14 +11,14 @@ from __future__ import unicode_literals
 from __future__ import absolute_import
 
 try:
-    #pylint: disable=no-name-in-module
+    # pylint: disable=no-name-in-module
     from urllib import unquote_plus
 except ImportError:
-    #pylint: disable=import-error,no-name-in-module
+    # pylint: disable=import-error,no-name-in-module
     from urllib.parse import unquote_plus
 
-from .constants import CONSTRAINT_COMP
-from .exceptions import FiqlFormatException
+from .constants import CONSTRAINT_COMP, COMPARISON_MAP
+from .exceptions import FiqlFormatException, FiqlParserException
 from .expression import BaseExpression, Expression
 from .constraint import Constraint
 from .operator import Operator
@@ -28,7 +28,7 @@ def iter_parse(fiql_str):
     """Iterate through the FIQL string. Yield a tuple containing the
     following FIQL components for each iteration:
 
-      - preamble: Any operator or opening/closing paranthesis preceding a
+      - preamble: Any operator or opening/closing parenthesis preceding a
         constraint or at the very end of the FIQL string.
       - selector: The selector portion of a FIQL constraint or ``None`` if
         yielding the last portion of the string.
@@ -45,7 +45,7 @@ def iter_parse(fiql_str):
     Yields:
         tuple: Preamble, selector, comparison, argument.
     """
-    while len(fiql_str):
+    while fiql_str:
         constraint_match = CONSTRAINT_COMP.split(fiql_str, 1)
         if len(constraint_match) < 2:
             yield (constraint_match[0], None, None, None)
@@ -54,10 +54,10 @@ def iter_parse(fiql_str):
             constraint_match[0],
             unquote_plus(constraint_match[1]),
             constraint_match[4],
-            unquote_plus(constraint_match[6]) \
-                    if constraint_match[6] else None
+            unquote_plus(constraint_match[6]) if constraint_match[6] else None
         )
         fiql_str = constraint_match[8]
+
 
 def parse_str_to_expression(fiql_str):
     """Parse a FIQL formatted string into an ``Expression``.
@@ -76,10 +76,11 @@ def parse_str_to_expression(fiql_str):
     Example:
 
         >>> expression = parse_str_to_expression(
-        ...         "name==bar,dob=gt=1990-01-01")
+        ...     "name==bar,dob=gt=1990-01-01"
+        ... )
 
     """
-    #pylint: disable=too-many-branches
+    # pylint: disable=too-many-branches
     nesting_lvl = 0
     last_element = None
     expression = Expression()
@@ -122,3 +123,56 @@ def parse_str_to_expression(fiql_str):
             "Parsed string '%s' contained no constraint" % fiql_str)
     return expression
 
+
+def from_python_to_expression(constraints):
+    """Construct the ``Expression`` instance from a list or tuple
+    (If it contains only one constraint).
+
+    Args:
+        constraints (list or tuple): Expression as a tuple or list
+            containing the constraints.
+
+    Returns:
+        Expression: The constructed ``Expression``.
+
+    Raises:
+        FiqlParserException: Unable to determine the input is expression
+            or constraint.
+
+    Example:
+
+        >>> expression = from_python_to_expression(
+        ...     [
+        ...         'OR',
+        ...         ('a', '==', 'wee'),
+        ...         ['AND',
+        ...             ['AND', ('foo', None, None), ('bar', '>', '45')],
+        ...             ('key', None, None)
+        ...         ]
+        ...     ]
+        ... )
+
+    """
+    if not constraints:
+        return None
+    if len(constraints) == 1:
+        raise FiqlParserException(
+            "Expression or constraint must contain at lest two items. - %s" \
+            % constraints
+        )
+    if len(constraints) == 3 and (
+            constraints[1] is None or constraints[1] in COMPARISON_MAP.values()
+    ):
+        return Constraint(*constraints)
+    if constraints[0] == "OR":
+        return Expression().op_or(
+            *[from_python_to_expression(c) for c in constraints[1:]]
+        )
+    if constraints[0] == "AND":
+        return Expression().op_and(
+            *[from_python_to_expression(c) for c in constraints[1:]]
+        )
+    raise FiqlParserException(
+        "Unable to determine the input is expression or constraint. - %s" \
+        % constraints
+    )

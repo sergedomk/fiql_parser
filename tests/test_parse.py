@@ -9,7 +9,7 @@ import unittest
 
 from fiql_parser import (parse_str_to_expression,
         FiqlException)
-from fiql_parser.parser import iter_parse
+from fiql_parser.parser import iter_parse, from_python_to_expression
 
 
 class TestParse(unittest.TestCase):
@@ -133,3 +133,14 @@ class TestParse(unittest.TestCase):
             except FiqlException:
                 pass
 
+    def test_parse_python_to_expression(self):
+        constraints = [
+            'OR',
+            ('a', '==', 'wee'),
+            ['AND',
+             ['AND', ('foo', None, None), ('bar', '>', '45')],
+             ('key', None, None)
+             ]
+        ]
+        expression = from_python_to_expression(constraints)
+        self.assertEqual(constraints, expression.to_python())

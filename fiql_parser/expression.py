@@ -9,13 +9,11 @@ The ``expression`` module includes the code used for ensuring that any FIQL
 from __future__ import unicode_literals
 from __future__ import absolute_import
 
-
 from .exceptions import FiqlObjectException
 from .operator import Operator
 
 
 class BaseExpression(object):
-
     """
     Both ``Constraint`` and ``Expression`` classes extend the
     ``BaseExpression`` class. A FIQL ``Constraint`` is a simple FIQL
@@ -71,7 +69,6 @@ class BaseExpression(object):
 
 
 class Expression(BaseExpression):
-
     """
     The ``Expression`` is the largest logical unit of a FIQL ``Expression``. It
     must, like the ``Constraint`` evaluate to ``True`` or ``False``. The
@@ -122,8 +119,7 @@ class Expression(BaseExpression):
         already exists and is of a different precedence.
 
         There are three possibilities when adding an ``Operator`` to an
-        ``Expression`` depending on whether or not an ``Operator`` already
-        exists:
+        ``Expression`` depending on whether an ``Operator`` already exists:
 
           - No ``Operator`` on the working ``Expression``; Simply set the
             ``Operator`` and return ``self``.
@@ -154,15 +150,14 @@ class Expression(BaseExpression):
         elif operator > self._working_fragment.operator:
             last_constraint = self._working_fragment.elements.pop()
             self._working_fragment = self._working_fragment \
-                    .create_nested_expression()
+                .create_nested_expression()
             self._working_fragment.add_element(last_constraint)
             self._working_fragment.add_operator(operator)
         elif operator < self._working_fragment.operator:
             if self._working_fragment.parent:
                 return self._working_fragment.parent.add_operator(operator)
-            else:
-                return Expression().add_element(self._working_fragment) \
-                        .add_operator(operator)
+            return Expression().add_element(self._working_fragment) \
+                .add_operator(operator)
         return self
 
     def add_element(self, element):
@@ -182,8 +177,7 @@ class Expression(BaseExpression):
             element.set_parent(self._working_fragment)
             self._working_fragment.elements.append(element)
             return self
-        else:
-            return self.add_operator(element)
+        return self.add_operator(element)
 
     def create_nested_expression(self):
         """Create a nested ``Expression``, add it as an element to this
@@ -237,13 +231,13 @@ class Expression(BaseExpression):
         Returns:
             list or tuple: The deconstructed ``Expression``.
         """
-        if len(self.elements) == 0:
+        if not self.elements:
             return None
         if len(self.elements) == 1:
             return self.elements[0].to_python()
         operator = self.operator or Operator(';')
         return [operator.to_python()] + \
-            [elem.to_python() for elem in self.elements]
+               [elem.to_python() for elem in self.elements]
 
     def __str__(self):
         """Represent the ``Expression`` instance as a string.
@@ -259,4 +253,3 @@ class Expression(BaseExpression):
             if parent_operator > operator:
                 return "(" + elements_str + ")"
         return elements_str
-

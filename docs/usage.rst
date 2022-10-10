@@ -103,3 +103,23 @@ Building an Expression
     fiql_str = str(expression)
     # Output of above would be:
     "last_name==foo*,(age=lt=55;age=gt=5)"
+
+**Method Three (Added in Version 1.0)**
+
+.. code-block:: python
+
+    from fiql_parser import Expression
+
+    expression = Expression.from_python(
+        ['OR',
+            ('last_name', '==', 'foo*'),
+            ['AND',
+                ('age', '<', '55'),
+                ('age', '>', '5'),
+            ]
+        ]
+    )
+
+    fiql_str = str(expression)
+    # Output of above would be:
+    "last_name==foo*,(age=lt=55;age=gt=5)"

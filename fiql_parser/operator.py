@@ -84,14 +84,14 @@ class Operator(object):
         return 0
 
     def __eq__(self, other):
-        """Of equal precendence.
+        """Of equal precedence.
 
         Args:
             other (Operator): The ``Operator`` we are comparing precedence
                 against.
 
         Returns:
-            boolean: ``True`` if of equal precendence of ``other``.
+            boolean: ``True`` if of equal precedence of ``other``.
         """
         return OPERATOR_MAP[self.value][1] == OPERATOR_MAP[other.value][1]
 
@@ -103,7 +103,6 @@ class Operator(object):
                 against.
 
         Returns:
-            boolean: ``True`` if of less than precendence of ``other``.
+            boolean: ``True`` if of less than precedence of ``other``.
         """
         return OPERATOR_MAP[self.value][1] < OPERATOR_MAP[other.value][1]
-

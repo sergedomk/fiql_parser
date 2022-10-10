@@ -16,7 +16,7 @@ Attributes:
     COMPARISON_REGEX: Regular expression representing the FIQL Comparison
         operator; e.g., "=gt=" (`FIQL Draft#section-3.2`_). This rule includes
         a modification to the rule in the FIQL draft that correctly allows for
-        a string with no ALPHA characters.
+        a string with no ALPHA characters (Example: "==").
     SELECTOR_REGEX: Regular expression representing the FIQL Selector
         (`FIQL Draft#section-3.2`_). The Selector identifies the portion of an
         entry that a Constraint applies to.
@@ -32,6 +32,7 @@ Attributes:
         ``boolean`` value.
     CONSTRAINT_COMP: Compiled version of ``CONSTRAINT_REGEX``.
     COMPARISON_COMP: Compiled version of ``CONSTRAINT_REGEX`` as a full string.
+    COMPARISON_MAP (dict): Mappings for common FIQL comparisons.
 """
 from __future__ import unicode_literals
 from __future__ import absolute_import
@@ -71,3 +72,12 @@ CONSTRAINT_COMP = re.compile(CONSTRAINT_REGEX)
 # Comparison; full string (compiled)
 COMPARISON_COMP = re.compile(r'^' + COMPARISON_REGEX + r'$')
 
+# Common FIQL comparisons.
+COMPARISON_MAP = {
+    '==': '==',
+    '!=': '!=',
+    '=gt=': '>',
+    '=ge=': '>=',
+    '=lt=': '<',
+    '=le=': '<=',
+}

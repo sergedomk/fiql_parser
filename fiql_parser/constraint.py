@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """
 The FIQL ``Constraint`` is the building block of the FIQL ``Expression``. A
-FIQL ``Constraint`` is, on it's own, a very simple ``Expression``.
+FIQL ``Constraint`` is, on its own, a very simple ``Expression``.
 
 The ``constraint`` module includes the code used for managing comparison
 acceptance and representation of the FIQL ``Constraint``.
 
 Attributes:
-    COMPARISON_MAP (dict): Mappings for common FIQL comparisons.
+    REV_COMPARISON_MAP (dict): Reverse mappings for common FIQL comparisons.
 """
 from __future__ import unicode_literals
 from __future__ import absolute_import
@@ -20,19 +20,12 @@ except ImportError:
     from urllib.parse import quote_plus
 
 from .exceptions import FiqlObjectException
-from .constants import COMPARISON_COMP
+from .constants import COMPARISON_COMP, COMPARISON_MAP
 from .expression import BaseExpression, Expression
 
 
-# Common FIQL comparisons.
-COMPARISON_MAP = {
-    '==': '==',
-    '!=': '!=',
-    '=gt=': '>',
-    '=ge=': '>=',
-    '=lt=': '<',
-    '=le=': '<=',
-}
+# Reversed Common FIQL comparisons.
+REV_COMPARISON_MAP = {v: k for k, v in COMPARISON_MAP.items()}
 
 
 class Constraint(BaseExpression):
@@ -40,7 +33,7 @@ class Constraint(BaseExpression):
     """
     The ``Constraint`` is the smallest logical unit for a FIQL ``Expression``.
     It itself must evaluate to ``True`` or ``False`` and contains no smaller
-    unit which itself can evaulate to ``True`` or ``False``.
+    unit which itself can evaluate to ``True`` or ``False``.
 
     Attributes:
         selector (string): Constraint ``selector``.
@@ -65,8 +58,11 @@ class Constraint(BaseExpression):
         self.selector = selector
         # Validate comparison format.
         if comparison and COMPARISON_COMP.match(comparison) is None:
-            raise FiqlObjectException(
-                "'%s' is not a valid FIQL comparison" % comparison)
+            # Check for >, <, >=, or <=.
+            if not REV_COMPARISON_MAP.get(comparison):
+                raise FiqlObjectException(
+                    "'%s' is not a valid FIQL comparison" % comparison)
+            comparison = REV_COMPARISON_MAP.get(comparison)
         self.comparison = comparison
         self.argument = argument
 
@@ -125,4 +121,3 @@ class Constraint(BaseExpression):
                                       self.comparison,
                                       quote_plus(self.argument))
         return self.selector
-

@@ -28,5 +28,4 @@ from .exceptions import FiqlObjectException, FiqlFormatException
 from .operator import Operator
 from .constraint import Constraint
 from .expression import Expression
-from .parser import parse_str_to_expression
-
+from .parser import parse_str_to_expression, from_python_to_expression
