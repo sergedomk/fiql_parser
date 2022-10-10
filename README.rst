@@ -11,6 +11,15 @@ Complete documentation can be found at http://fiql-parser.readthedocs.org/
 CHANGES
 -------
 
+**Version 1.0**
+
+Release on October 9th, 2022
+
+* Added `from_python_to_expression` method.
+* Added support for >, <, <=, and >= when building `Constraint`.
+* Cleaned up some typos and clarified documentation.
+* Added support for "AND" and "OR" when building `Operator`.
+
 **Version 0.15**
 
 Release on July 2nd, 2016
