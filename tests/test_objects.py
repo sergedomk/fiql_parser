@@ -27,6 +27,12 @@ class TestObjects(unittest.TestCase):
         self.assertGreater(operator_and, operator_or)
         self.assertLess(operator_or, operator_and)
 
+    def test_operator_with_and_or(self):
+        operator_and = Operator('AND')
+        operator_or = Operator('OR')
+        self.assertEqual(operator_and, Operator(';'))
+        self.assertEqual(operator_or, Operator(','))
+
     def test_constraint_init_with_defaults(self):
         constraint = Constraint('foo')
         self.assertEqual('foo', constraint.selector)

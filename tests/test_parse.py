@@ -125,6 +125,8 @@ class TestParse(unittest.TestCase):
             "foo==bar(foo==bar)",
             ";foo==bar",
             "foo==bar;,foo==bar",
+            "foo>bar",
+            "(foo==bar)AND(foo==bar)"
         ]
         for test_str in not_fiql_strings:
             try:

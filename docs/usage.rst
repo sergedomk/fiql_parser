@@ -88,6 +88,24 @@ Building an Expression
     # Output of above would be:
     "last_name==foo*,(age=lt=55;age=gt=5)"
 
+*Version 1.0 added support for using >, <, <=, and >= when building
+constraints and support for using "AND" and "OR" when building operators.*
+
+.. code-block:: python
+
+    expression = Expression()
+    expression.add_element(Constraint('last_name', '==', 'foo*'))
+    expression.add_element(Operator('OR'))
+    sub_expression = Expression()
+    sub_expression.add_element(Constraint('age', '<', '55'))
+    sub_expression.add_element(Operator('AND'))
+    sub_expression.add_element(Constraint('age', '>', '5'))
+    expression.add_element(sub_expression)
+
+    print str(expression)
+    # Output of above would be:
+    "last_name==foo*,(age=lt=55;age=gt=5)"
+
 **Method Two (Changed in Version 0.11)**
 
 .. code-block:: python

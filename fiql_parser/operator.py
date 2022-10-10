@@ -10,21 +10,24 @@ acceptance, precedence, and representation of the FIQL ``Operator``.
 Attributes:
     OPERATOR_MAP (dict of tuple): Mappings of FIQL operators to common terms
         and their associated precedence.
+    REV_OPERATOR_MAP (dict): Reverse mappings for common FIQL operators.
 """
 from __future__ import unicode_literals
 from __future__ import absolute_import
 
 from .exceptions import FiqlObjectException
 
-
 OPERATOR_MAP = {
     ';': ('AND', 2),
     ',': ('OR', 1),
 }
+REV_OPERATOR_MAP = {
+    'AND': ';',
+    'OR': ',',
+}
 
 
 class Operator(object):
-
     """
     The comparison ``Operator`` is the representation of the FIQL comparison
     operator.
@@ -32,7 +35,8 @@ class Operator(object):
     Attributes:
         value (string): The FIQL operator.
     """
-    #pylint: disable=too-few-public-methods
+
+    # pylint: disable=too-few-public-methods
 
     def __init__(self, fiql_op_str):
         """Initialize instance of ``Operator``.
@@ -43,9 +47,12 @@ class Operator(object):
         Raises:
             FiqlObjectException: Invalid FIQL operator.
         """
-        if not fiql_op_str in OPERATOR_MAP:
-            raise FiqlObjectException(
-                "'%s' is not a valid FIQL operator" % fiql_op_str)
+        if fiql_op_str not in OPERATOR_MAP:
+            # Check for 'AND' or 'OR'.
+            if not REV_OPERATOR_MAP.get(fiql_op_str):
+                raise FiqlObjectException(
+                    "'%s' is not a valid FIQL operator" % fiql_op_str)
+            fiql_op_str = REV_OPERATOR_MAP.get(fiql_op_str)
         self.value = fiql_op_str
 
     def to_python(self):

@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-© Copyright 2014-2015, by Serge Domkowski.
+© Copyright 2014 Serge Domkowski.
 
 .. note::
 
     This code includes a few modifications to rules in the FIQL draft.
 
-    The rule defined for ``Comparison`` has been modifed to deal with an
+    The rule defined for ``Comparison`` has been modified to deal with an
     inconsistency in the draft documentation. The change fixes an issue where
     the string "==" was NOT a valid ``Comparison`` and thus made most of
     the examples in the FIQL draft incorrect.
 
-    The accepted arg chars to have been modifed to include ":". This change
+    The accepted arg chars have been modified to include ":". This change
     fixes the issue where :rfc:`3339` compliant DateTime values were not valid
     unless the ":" was percent-encoded. This contradicted the FIQL draft
     ``date_str`` examples. Since ":" is a valid character in an HTTP query
